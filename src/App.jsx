@@ -1,14 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {  Layout } from 'antd';
+import AppHeader from './components/Layoy/AppHeader';
+import AppSider from './components/Layoy/AppSider';
+import AppContent from './components/Layoy/AppContent';
 
-function App() {
-  const [count, setCount] = useState(0)
 
-  return 
-    <>
-    </>
-      
+
+
+
+ 
+   export default function App() {
+  
+  return (
+< Layout>
+     <AppHeader/>
+  <Layout>
+    <AppSider/>
+    <AppContent/>
+      </Layout>
+    
+</Layout>
+  )
 }
-export default App
+
