@@ -1,6 +1,6 @@
 import { cryptoAssets,cryptoData } from "./components/data"; 
 
-export function fetchCryptoData() {
+export function fakeFetchCryptoData() {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(cryptoData);
