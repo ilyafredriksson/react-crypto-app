@@ -1,9 +1,9 @@
-import { Layout,Card,Statistic,List,Typography } from 'antd';
+import { Layout,Card,Statistic,List,Typography,Spin } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { useEffect,useState } from 'react';
 import { fetchAssets } from '../../api';
 const siderStyle = {
-  paddin: '1rem',
+  padding: '1rem',
 };
 
 const data = [
@@ -13,6 +13,21 @@ const data = [
   'Man charged over missing wedding girl.',
   'Los Angeles battles huge wildfires.',
 ];
+
+async function fakeFetchCryptoData() {
+  return new Promise((resolve) =>
+    setTimeout(
+      () =>
+        resolve({
+          result: [
+            { name: "Bitcoin", price: 27000 },
+            { name: "Ethereum", price: 1800 },
+          ],
+        }),
+      1000
+    )
+  );
+}
 
 
 export default function AppSider() {
@@ -33,7 +48,10 @@ const[assets,setAssets]=useState([])
     preload()
   },[])
 
-
+    if(loading){
+      return <Spin  fullscreen />
+     
+    }
     return(<Layout.Sider width="25%" style={siderStyle}>
       <Card style={{marginBottom:'1rem'}}>
      <Statistic
