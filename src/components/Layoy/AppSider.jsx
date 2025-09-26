@@ -1,11 +1,39 @@
-import { Layout,Card,Statistic } from 'antd';
+import { Layout,Card,Statistic,List,Typography } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { useEffect,useState } from 'react';
+import { fetchAssets } from '../../api';
 const siderStyle = {
   paddin: '1rem',
 };
 
+const data = [
+  'Racing car sprays burning fuel into crowd.',
+  'Japanese princess to wed commoner.',
+  'Australian walks 100km after outback crash.',
+  'Man charged over missing wedding girl.',
+  'Los Angeles battles huge wildfires.',
+];
+
 
 export default function AppSider() {
+const[loading,setLoading]=useState(false)
+const[crypto,setCrypto]=useState([])
+const[assets,setAssets]=useState([])
+
+  useEffect(()=>{
+
+    async function preload(){
+      setLoading(true)
+   const {result} =await fakeFetchCryptoData()
+   const assets = await fetchAssets()
+   setAssets(assets)
+   setCrypto(result)
+   setLoading(false)
+    }
+    preload()
+  },[])
+
+
     return(<Layout.Sider width="25%" style={siderStyle}>
       <Card style={{marginBottom:'1rem'}}>
      <Statistic
@@ -17,6 +45,16 @@ export default function AppSider() {
           suffix="%"
      />
      </Card>
+     <List
+      size="small"
+      bordered
+      dataSource={data}
+      renderItem={(item) => (
+        <List.Item>
+          <Typography.Text mark>[ITEM]</Typography.Text> {item}
+        </List.Item>
+      )}
+    />
     
      <Card>
      <Statistic
