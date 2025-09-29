@@ -122,7 +122,7 @@ export default function AppSider() {
             size="small"
             dataSource={[
               {title:'Total profit', value: asset.totalProfit},
-              {title:'Asset Amount', value: asset.amount},
+              {title:'Asset Amount', value: asset.amount,isPlain:true},
               {title:'Difrence',value: asset.growPercent},
             ]}
 
@@ -130,7 +130,8 @@ export default function AppSider() {
             renderItem={(item) => (
               <List.Item>
                 <span>{item.title}:</span>
-                <span>{item.value}</span>
+                {item.isPlain && <span>{item.value}</span>}
+                {!item.isPlain && <span>{item.value.toFixed(2)}$</span>}
               </List.Item>
             )}
           />
