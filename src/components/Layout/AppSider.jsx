@@ -2,13 +2,16 @@ import { Layout, Card, Statistic, List, Typography, Spin } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 
+
+
+
 // Mock functions - om api.js inte finns eller har fel
 const fetchAssets = async () => {
   // Returnera mock data om den riktiga funktionen inte finns
   return [
     { id: 'bitcoin', amount: 1, price: 40000 },
     { id: 'ethereum', amount: 5, price: 2500 },
-    { id: 'cardano', amount: 1000, price: 0.4 }
+   
   ];
 };
 
@@ -20,13 +23,7 @@ const siderStyle = {
   padding: '1rem',
 };
 
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.',
-];
+
 
 // Mock function for crypto data fetching
 async function fakeFetchCryptoData() {
@@ -34,7 +31,7 @@ async function fakeFetchCryptoData() {
     result: [
       { id: 'bitcoin', name: 'Bitcoin', price: 45000 },
       { id: 'ethereum', name: 'Ethereum', price: 3000 },
-      { id: 'cardano', name: 'Cardano', price: 0.5 },
+      
     ],
   };
 }
@@ -97,7 +94,7 @@ export default function AppSider() {
 
   if (loading) {
     return (
-      <Spin
+      <Spin fullscreen
         size="large"
         style={{
           display: 'flex',
@@ -111,7 +108,35 @@ export default function AppSider() {
 
   return (
     <Layout.Sider width="25%" style={siderStyle}>
-      <Card style={{ marginBottom: '1rem' }}>
+      {assets.map((asset) => (
+        <Card key={asset.id} style={{ marginBottom: '1rem' }}>
+          <Statistic
+            title={asset.id}
+            value={asset.totalAmount}
+            precision={2}
+            valueStyle={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
+            prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            suffix="$"
+          />
+          <List
+            size="small"
+            dataSource={[
+              {title:'Total profit', value: asset.totalProfit},
+              {title:'Asset Amount', value: asset.amount},
+              {title:'Difrence',value: asset.growPercent},
+            ]}
+
+            
+            renderItem={(item) => (
+              <List.Item>
+                <span>{item.title}:</span>
+                <span>{item.value}</span>
+              </List.Item>
+            )}
+          />
+        </Card>
+      ))}
+      {/*<Card key={assets.id} style={{ marginBottom: '1rem' }}>
         <Statistic
           title="Active"
           value={11.28}
@@ -123,24 +148,9 @@ export default function AppSider() {
       </Card>
 
       {/* Visa assets data istället för static data */}
-      <List
-        size="small"
-        bordered
-        dataSource={assets}
-        renderItem={(asset) => (
-          <List.Item>
-            <Typography.Text mark>[{asset.name || asset.id}]</Typography.Text> 
-            ${asset.totalAmount ? asset.totalAmount.toFixed(2) : '0.00'} 
-            {asset.growPercent !== 0 && (
-              <span style={{ color: asset.grow ? '#3f8600' : '#cf1322', marginLeft: '8px' }}>
-                ({asset.grow ? '+' : ''}{asset.growPercent.toFixed(2)}%)
-              </span>
-            )}
-          </List.Item>
-        )}
-      />
+      
 
-      <Card style={{ marginTop: '1rem' }}>
+      {/*<Card style={{ marginTop: '1rem' }}>
         <Statistic
           title="Idle"
           value={9.3}
@@ -149,7 +159,7 @@ export default function AppSider() {
           prefix={<ArrowDownOutlined />}
           suffix="%"
         />
-      </Card>
+      </Card>/*/}
     </Layout.Sider>
   );
 }
