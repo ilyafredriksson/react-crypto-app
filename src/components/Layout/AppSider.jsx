@@ -25,7 +25,7 @@ export default function AppSider() {
         const coin = result.find((c) => c.id === asset.id);
         return {
           ...asset, 
-          grow: coin.price < coin.price,
+          grow: asset.price < coin.price,
           growPercent: percentDifference(asset.price, coin.price),
           totalAmount: asset.amount * coin.price,
           totalProfit: asset.amount * coin.price - asset.amount * asset.price,
@@ -63,7 +63,7 @@ export default function AppSider() {
             dataSource={[
               { title: "Total profit", value: asset.totalProfit },
               { title: "Asset Amount", value: asset.amount, isPlain: true },
-              //{ title: "Difference", value: asset.growPercent, withTag: true },
+              { title: "Difference", value: asset.growPercent, withTag: true },
             ]}
             renderItem={(item) => (
               <List.Item >
@@ -71,7 +71,7 @@ export default function AppSider() {
                 <span>
                   {item.withTag && (
                     <Tag color={asset.grow ? "green" : "red"}>
-                      {asset.growPercent}%
+                      {asset.growPercent.toFixed(2)}%
                     </Tag>
                   )}
                   {item.isPlain && item.value}
