@@ -1,37 +1,26 @@
-import { Layout, Card, Statistic, List, Typography, Spin } from 'antd';
-import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Layout, Card, Statistic, List, Typography, Spin, Tag } from "antd";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 
-
-
-
-// Mock functions - om api.js inte finns eller har fel
+// Mock functions
 const fetchAssets = async () => {
-  // Returnera mock data om den riktiga funktionen inte finns
   return [
-    { id: 'bitcoin', amount: 1, price: 40000 },
-    { id: 'ethereum', amount: 5, price: 2500 },
-   
+    { id: "bitcoin", amount: 1, price: 40000 },
+    { id: "ethereum", amount: 5, price: 2500 },
   ];
 };
 
-const percentDifference = (a, b) => {
-  return ((b - a) / a) * 100;
-};
+const percentDifference = (a, b) => ((b - a) / a) * 100;
 
 const siderStyle = {
-  padding: '1rem',
+  padding: "1rem",
 };
 
-
-
-// Mock function for crypto data fetching
 async function fakeFetchCryptoData() {
   return {
     result: [
-      { id: 'bitcoin', name: 'Bitcoin', price: 45000 },
-      { id: 'ethereum', name: 'Ethereum', price: 3000 },
-      
+      { id: "bitcoin", name: "Bitcoin", price: 45000 },
+      { id: "ethereum", name: "Ethereum", price: 3000 },
     ],
   };
 }
@@ -75,15 +64,28 @@ export default function AppSider() {
         setAssets(processedAssets);
         setCrypto(result);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        // Fallback till mock data vid error
+        console.error("Error fetching data:", error);
         setAssets([
-          { id: 'bitcoin', name: 'Bitcoin', grow: true, growPercent: 12.5, totalAmount: 45000, totalProfit: 5000 },
-          { id: 'ethereum', name: 'Ethereum', grow: true, growPercent: 20, totalAmount: 15000, totalProfit: 2500 },
+          {
+            id: "bitcoin",
+            name: "Bitcoin",
+            grow: true,
+            growPercent: 12.5,
+            totalAmount: 45000,
+            totalProfit: 5000,
+          },
+          {
+            id: "ethereum",
+            name: "Ethereum",
+            grow: true,
+            growPercent: 20,
+            totalAmount: 15000,
+            totalProfit: 2500,
+          },
         ]);
         setCrypto([
-          { id: 'bitcoin', name: 'Bitcoin', price: 45000 },
-          { id: 'ethereum', name: 'Ethereum', price: 3000 },
+          { id: "bitcoin", name: "Bitcoin", price: 45000 },
+          { id: "ethereum", name: "Ethereum", price: 3000 },
         ]);
       } finally {
         setLoading(false);
@@ -94,13 +96,14 @@ export default function AppSider() {
 
   if (loading) {
     return (
-      <Spin fullscreen
+      <Spin
+        fullscreen
         size="large"
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       />
     );
@@ -109,34 +112,50 @@ export default function AppSider() {
   return (
     <Layout.Sider width="25%" style={siderStyle}>
       {assets.map((asset) => (
-        <Card key={asset.id} style={{ marginBottom: '1rem' }}>
+        <Card key={asset.id} style={{ marginBottom: "1rem" }}>
           <Statistic
-            title={asset.id}
+            title={asset.name}
             value={asset.totalAmount}
             precision={2}
-            valueStyle={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
+            valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
             prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
             suffix="$"
           />
           <List
             size="small"
             dataSource={[
-              {title:'Total profit', value: asset.totalProfit},
-              {title:'Asset Amount', value: asset.amount,isPlain:true},
-              {title:'Difrence',value: asset.growPercent},
+              { title: "Total profit", value: asset.totalProfit },
+              { title: "Asset Amount", value: asset.amount, isPlain: true },
+              { title: "Difference", value: asset.growPercent, withTag: true },
             ]}
-
-            
             renderItem={(item) => (
               <List.Item>
                 <span>{item.title}:</span>
-                {item.isPlain && <span>{item.value}</span>}
-                {!item.isPlain && <span>{item.value.toFixed(2)}$</span>}
+                <span style={{ marginLeft: "8px" }}>
+                  {item.withTag && (
+                    <Tag color={asset.grow ? "green" : "red"}>
+                      {asset.growPercent.toFixed(2)}%
+                    </Tag>
+                  )}
+
+                  {item.isPlain && <span>{item.value}</span>}
+
+                  {!item.isPlain && !item.withTag && (
+                    <Typography.Text type={asset.grow ? "success" : "danger"}>
+                      {item.value.toFixed(2)}$
+                    </Typography.Text>
+                  )}
+                </span>
               </List.Item>
             )}
           />
         </Card>
       ))}
+    </Layout.Sider>
+  );
+}
+
+
       {/*<Card key={assets.id} style={{ marginBottom: '1rem' }}>
         <Statistic
           title="Active"
@@ -161,6 +180,5 @@ export default function AppSider() {
           suffix="%"
         />
       </Card>/*/}
-    </Layout.Sider>
-  );
-}
+    
+  
