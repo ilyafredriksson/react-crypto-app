@@ -1,29 +1,13 @@
 import { Layout, Card, Statistic, List, Typography, Spin, Tag } from "antd";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { fakeFetchCryptoData,fetchAssets } from "../../api";
+import { percentDifference,capitalize } from "../utils";
 
-// Mock functions
-const fetchAssets = async () => {
-  return [
-    { id: "bitcoin", amount: 1, price: 40000 },
-    { id: "ethereum", amount: 5, price: 2500 },
-  ];
-};
-
-const percentDifference = (a, b) => ((b - a) / a) * 100;
-
-const siderStyle = {
+const siderStyle ={
   padding: "1rem",
-};
-
-async function fakeFetchCryptoData() {
-  return {
-    result: [
-      { id: "bitcoin", name: "Bitcoin", price: 45000 },
-      { id: "ethereum", name: "Ethereum", price: 3000 },
-    ],
-  };
 }
+
 
 export default function AppSider() {
   const [loading, setLoading] = useState(false);
@@ -108,52 +92,48 @@ export default function AppSider() {
       />
     );
   }
-
-  return (
-    <Layout.Sider width="25%" style={siderStyle}>
-      {assets.map((asset) => (
-        <Card key={asset.id} style={{ marginBottom: "1rem" }}>
-          <Statistic
-            title={asset.name}
-            value={asset.totalAmount}
-            precision={2}
-            valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
-            prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-            suffix="$"
-          />
-          <List
-            size="small"
-            dataSource={[
-              { title: "Total profit", value: asset.totalProfit },
-              { title: "Asset Amount", value: asset.amount, isPlain: true },
-              { title: "Difference", value: asset.growPercent, withTag: true },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <span>{item.title}:</span>
-                <span style={{ marginLeft: "8px" }}>
-                  {item.withTag && (
-                    <Tag color={asset.grow ? "green" : "red"}>
-                      {asset.growPercent.toFixed(2)}%
-                    </Tag>
-                  )}
-
-                  {item.isPlain && <span>{item.value}</span>}
-
-                  {!item.isPlain && !item.withTag && (
-                    <Typography.Text type={asset.grow ? "success" : "danger"}>
-                      {item.value.toFixed(2)}$
-                    </Typography.Text>
-                  )}
-                </span>
-              </List.Item>
-            )}
-          />
-        </Card>
-      ))}
-    </Layout.Sider>
-  );
-}
+return (
+  <Layout.Sider width="25%" style={siderStyle}>
+    {assets.map((asset) => (
+      <Card key={asset.id} style={{ marginBottom: "1rem" }}>
+        <Statistic
+          title={capitalize(asset.id)}
+          value={asset.totalAmount}
+          precision={2}
+          valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
+          prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+          suffix="$"
+        />
+        <List
+          size="small"
+          dataSource={[
+            { title: "Total profit", value: asset.totalProfit },
+            { title: "Asset Amount", value: asset.amount, isPlain: true },
+            //{ title: "Difference", value: asset.growPercent, withTag: true },
+          ]}
+          renderItem={(item) => (
+            <List.Item>
+              <span>{item.title}:</span>
+              <span>
+                {item.withTag && (
+                  <Tag color={asset.grow ? "green" : "red"}>
+                    {asset.growPercent}%
+                  </Tag>
+                )}
+                {item.isPlain && item.value}
+                {!item.isPlain && !item.withTag && (
+                  <Typography.Text type={asset.grow ? "success" : "danger"}>
+                    {item.value.toFixed(2)}$
+                  </Typography.Text>
+                )}
+              </span>
+            </List.Item>
+          )}
+        />
+      </Card>
+    ))}
+  </Layout.Sider>
+);
 
 
       {/*<Card key={assets.id} style={{ marginBottom: '1rem' }}>
@@ -180,5 +160,5 @@ export default function AppSider() {
           suffix="%"
         />
       </Card>/*/}
-    
+      }
   
