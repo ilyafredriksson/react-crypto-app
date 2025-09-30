@@ -23,27 +23,17 @@ export default function AppSider() {
       // kombinera assets med cryptoData
       const processedAssets = fetchedAssets.map((asset) => {
         const coin = result.find((c) => c.id === asset.id);
-
-        if (!coin) {
-          return {
-            ...asset,
-            grow: false,
-            growPercent: 0,
-            totalAmount: asset.amount * 0,
-            totalProfit: 0,
-          };
-        }
-
-        const buyPrice = asset.price ?? coin.price;
-
         return {
-          ...asset,
-          grow: buyPrice < coin.price,
-          growPercent: percentDifference(buyPrice, coin.price),
+          ...asset, 
+          grow: coin.price < coin.price,
+          growPercent: percentDifference(asset.price, coin.price),
           totalAmount: asset.amount * coin.price,
-          totalProfit: asset.amount * coin.price - asset.amount * buyPrice,
+          totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+          price: coin.price,
         };
       });
+
+      setCrypto(result);
 
       setAssets(processedAssets);
       setLoading(false);
@@ -73,10 +63,10 @@ export default function AppSider() {
             dataSource={[
               { title: "Total profit", value: asset.totalProfit },
               { title: "Asset Amount", value: asset.amount, isPlain: true },
-              { title: "Difference", value: asset.growPercent, withTag: true },
+              //{ title: "Difference", value: asset.growPercent, withTag: true },
             ]}
             renderItem={(item) => (
-              <List.Item style ={{display:'flex', justifyContent:'space-between'}}>
+              <List.Item >
                 <span>{item.title}:</span>
                 <span>
                   {item.withTag && (
