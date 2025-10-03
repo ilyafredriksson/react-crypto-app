@@ -1,7 +1,11 @@
 export function percentDifference(a, b) {
-  return +(100 * Math.abs((a - b) / ((a + b) / 2))). toFixed(2);
+  // Return percentage difference between a and b, rounded to 2 decimals
+  if (typeof a !== 'number' || typeof b !== 'number') return 0;
+  const diff = 100 * Math.abs((a - b) / ((a + b) / 2));
+  return Number(diff.toFixed(2));
 }
 
-export function capitalize(str){
-    return str.charAt(0).toUpperCase() + str.slice(1);
+export function capitalize(str) {
+  if (!str) return '';
+  return String(str).charAt(0).toUpperCase() + String(str).slice(1);
 }

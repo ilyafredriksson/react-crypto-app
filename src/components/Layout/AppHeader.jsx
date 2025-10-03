@@ -26,16 +26,16 @@ export default function AppHeader() {
         optionLabelProp="label"
         onChange={handleChange}
         options={crypto.map((coin) => ({
-          label: coin.name,
+          label: (
+            <Space>
+              {coin.icon && (
+                <img src={coin.icon} alt={coin.name} style={{ width: 20 }} />
+              )}
+              {coin.name}
+            </Space>
+          ),
           value: coin.id,
-          icon: coin.icon || "",
         }))}
-        optionRender={(option) => (
-          <Space>
-            {option.icon && <img src={option.icon} alt={option.label} style={{ width: 20 }} />}
-            {option.label}
-          </Space>
-        )}
       />
       <Button type="primary">Add Asset</Button>
     </Layout.Header>
