@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Select, Space } from "antd";
+import { Select, Space, Typography } from "antd";
 import { useCrypto } from "../context/crypto-context";
 
 export default function AddAssetForm() {
@@ -28,5 +28,18 @@ export default function AddAssetForm() {
     );
   }
 
-  return <h2>ADD ASSET for {coin.name}</h2>;
+  return (
+    <form>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={coin.icon}
+          alt={coin.name}
+          style={{ width: 40, marginRight: 10 }}
+        />
+        <Typography.Title level={2} style={{ margin: 0 }}>
+          {coin.name}
+        </Typography.Title>
+      </div>
+    </form>
+  );
 }

@@ -8,6 +8,7 @@ export default function CoinInfoModal({ coin }) {
 
   return (
     <>
+      <Flex align="center">
       <div style={{ display: "flex", alignItems: "center" }}>
         <img
           src={coin.icon}
@@ -18,7 +19,7 @@ export default function CoinInfoModal({ coin }) {
           {coin.name} <Typography.Text type="secondary">({coin.symbol})</Typography.Text>
         </Typography.Title>
       </div>
-
+         </Flex>
       <Divider />
 
       <Typography.Paragraph>

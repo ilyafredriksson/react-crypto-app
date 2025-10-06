@@ -84,6 +84,7 @@ export default function AppHeader() {
         closable={{ 'aria-label': 'Close Button' }}
         onClose={()=>setDrawer(false)}
         open={drawer}
+        destroyOnClose
       >
         <AddAssetForm />
       </Drawer>
