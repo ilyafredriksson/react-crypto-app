@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { Select, Space, Typography } from "antd";
+import {
+  Select,
+  Space,
+  Typography,
+  Form,
+  Divider,
+  Button,
+  InputNumber,
+} from "antd";
 import { useCrypto } from "../context/crypto-context";
 
 export default function AddAssetForm() {
@@ -18,7 +26,9 @@ export default function AddAssetForm() {
         options={crypto.map((c) => ({
           label: (
             <Space>
-              {c.icon && <img src={c.icon} alt={c.name} style={{ width: 20 }} />}
+              {c.icon && (
+                <img src={c.icon} alt={c.name} style={{ width: 20 }} />
+              )}
               {c.name}
             </Space>
           ),
@@ -27,9 +37,18 @@ export default function AddAssetForm() {
       />
     );
   }
-
+  function onFinish(values) {
+    console.log("Finish:", values);
+  }
   return (
-    <form>
+    <Form
+      name="basic"
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 10 }}
+      style={{ maxWidth: 600 }}
+      initialValues={{}}
+      onFinish={onFinish}
+    >
       <div style={{ display: "flex", alignItems: "center" }}>
         <img
           src={coin.icon}
@@ -40,6 +59,41 @@ export default function AddAssetForm() {
           {coin.name}
         </Typography.Title>
       </div>
-    </form>
+
+      <Divider />
+
+      <Form.Item
+        label="Amount"
+        name="amount"
+        rules={[
+          {
+            required: true,
+            type: "number",
+            min: 0,
+            message: "Please input your username!",
+          },
+        ]}
+      >
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Price" name="price">
+        <InputNumber disabled style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Date & Time" name="date">
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item label="Total" name="total">
+        <InputNumber disabled style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Add Asset
+        </Button>
+      </Form.Item>
+    </Form>
   );
 }
