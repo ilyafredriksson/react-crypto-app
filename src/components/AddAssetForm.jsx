@@ -7,10 +7,24 @@ import {
   Divider,
   Button,
   InputNumber,
+  DatePicker,
 } from "antd";
 import { useCrypto } from "../context/crypto-context";
 
+const validateMessages = {
+  required: "${label} is required!",
+  types: {
+    number: "${label} is not a valid number!",
+    
+  },
+   number:{
+    range:'${label} must be between ${min} and ${max}',
+   }
+};
+
+
 export default function AddAssetForm() {
+    const [form] = Form.useForm();
   const { crypto } = useCrypto();
 
   const [coin, setCoin] = useState(null);
@@ -40,14 +54,28 @@ export default function AddAssetForm() {
   function onFinish(values) {
     console.log("Finish:", values);
   }
+function handleAmountChange(value){
+    form.setFieldsValue({
+        total: value * coin.price.toFixed(2),
+    });
+}
+
+
+
+
+
   return (
     <Form
+        form={form}
       name="basic"
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 10 }}
       style={{ maxWidth: 600 }}
-      initialValues={{}}
+      initialValues={{
+        price: +coin.price.toFixed(2),
+      }}
       onFinish={onFinish}
+      validateMessages={validateMessages}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
         <img
@@ -70,11 +98,11 @@ export default function AddAssetForm() {
             required: true,
             type: "number",
             min: 0,
-            message: "Please input your username!",
           },
         ]}
       >
-        <InputNumber style={{ width: "100%" }} />
+        <InputNumber placeholder="Enter coin amount"  style={{ width: "100%" }}
+        onChange={handleAmountChange} />
       </Form.Item>
 
       <Form.Item label="Price" name="price">
@@ -82,7 +110,7 @@ export default function AddAssetForm() {
       </Form.Item>
 
       <Form.Item label="Date & Time" name="date">
-        <InputNumber style={{ width: "100%" }} />
+        <DatePicker showTime style={{ width: "100%" }} />
       </Form.Item>
 
       <Form.Item label="Total" name="total">
