@@ -8,26 +8,55 @@ import {
   Button,
   InputNumber,
   DatePicker,
+  Result,
 } from "antd";
 import { useCrypto } from "../context/crypto-context";
+import CoinInfo from "./CoinInfo";
+
+
 
 const validateMessages = {
   required: "${label} is required!",
   types: {
     number: "${label} is not a valid number!",
-    
   },
-   number:{
-    range:'${label} must be between ${min} and ${max}',
-   }
+  number: {
+    range: "${label} must be between ${min} and ${max}",
+  },
 };
 
-
 export default function AddAssetForm() {
-    const [form] = Form.useForm();
+  const [form] = Form.useForm();
   const { crypto } = useCrypto();
-
+  const [submitted, setSubmitted] = useState(false);
   const [coin, setCoin] = useState(null);
+ 
+  const onClose = () => {
+    setSubmitted(false);
+    form.resetFields();
+    setCoin(null);
+  };
+
+  if (submitted) {
+    const amount = form.getFieldValue("amount") ?? 0;
+    const price = form.getFieldValue("price") ?? 0;
+    return (
+      <Result
+        status="success"
+        title="New Asset Added Successfully"
+        subTitle={`Added ${amount} of ${coin?.name || ""} at price ${price} to your portfolio.`}
+        extra={[
+          <Button type="primary" key="close" onClick={onClose}>
+            Close
+          </Button>,
+        ]}
+      />
+    );
+  }
+   
+   
+
+
 
   if (!crypto || crypto.length === 0) return <div>Loading...</div>;
 
@@ -53,26 +82,22 @@ export default function AddAssetForm() {
   }
   function onFinish(values) {
     console.log("Finish:", values);
+    setSubmitted(true);
   }
-function handleAmountChange(value){
-    const price = form.getFieldValue('price')
-    form.setFieldsValue({
-        total: (value * price).toFixed(2),
-    });
-}
-  function handlePriceChange(value){
-    const amount = form.getFieldValue('amount')
-    form.setFieldsValue({
-        total: +(amount * value).toFixed(2),
-    });
-}
-
-
-
+  function handleAmountChange(value) {
+    const price = form.getFieldValue("price") ?? coin.price ?? 0;
+    const total = Number((Number(value || 0) * Number(price || 0)).toFixed(2));
+    form.setFieldsValue({ total });
+  }
+  function handlePriceChange(value) {
+    const amount = form.getFieldValue("amount") ?? 0;
+    const total = Number((Number(amount || 0) * Number(value || 0)).toFixed(2));
+    form.setFieldsValue({ total });
+  }
 
   return (
     <Form
-        form={form}
+      form={form}
       name="basic"
       labelCol={{ span: 4 }}
       wrapperCol={{ span: 10 }}
@@ -83,17 +108,8 @@ function handleAmountChange(value){
       onFinish={onFinish}
       validateMessages={validateMessages}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <img
-          src={coin.icon}
-          alt={coin.name}
-          style={{ width: 40, marginRight: 10 }}
-        />
-        <Typography.Title level={2} style={{ margin: 0 }}>
-          {coin.name}
-        </Typography.Title>
-      </div>
 
+       <CoinInfo coin={coin} />
       <Divider />
 
       <Form.Item
@@ -107,8 +123,11 @@ function handleAmountChange(value){
           },
         ]}
       >
-        <InputNumber placeholder="Enter coin amount"  style={{ width: "100%" }}
-        onChange={handleAmountChange} />
+        <InputNumber
+          placeholder="Enter coin amount"
+          style={{ width: "100%" }}
+          onChange={handleAmountChange}
+        />
       </Form.Item>
 
       <Form.Item label="Price" name="price">
