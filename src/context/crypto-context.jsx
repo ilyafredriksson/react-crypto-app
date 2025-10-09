@@ -19,15 +19,20 @@ export function CryptoContextProvider({ children }) {
       const { result } = await fakeFetchCryptoData();
       const fetchedAssets = await fetchAssets();
 
-      const processedAssets = fetchedAssets.map((asset) => {
-        const coin = result.find((c) => c.id === asset.id);
+      // Build processed assets defensively in case a coin isn't found
+      const processedAssets = (fetchedAssets || []).map((asset) => {
+        const coin = result.find((c) => c.id === asset.id) || {};
+        const coinPrice = typeof coin.price === "number" ? coin.price : asset.price ?? 0;
+        const assetPrice = typeof asset.price === "number" ? asset.price : coinPrice;
+        const amount = typeof asset.amount === "number" ? asset.amount : Number(asset.amount) || 0;
+
         return {
           ...asset,
-          grow: asset.price < coin.price,
-          growPercent: percentDifference(asset.price, coin.price),
-          totalAmount: asset.amount * coin.price,
-          totalProfit: asset.amount * coin.price - asset.amount * asset.price,
-          price: coin.price,
+          grow: assetPrice < coinPrice,
+          growPercent: percentDifference(assetPrice, coinPrice),
+          totalAmount: Number((amount * coinPrice).toFixed(2)),
+          totalProfit: Number((amount * coinPrice - amount * assetPrice).toFixed(2)),
+          price: coinPrice,
         };
       });
 
@@ -39,8 +44,28 @@ export function CryptoContextProvider({ children }) {
     preload();
   }, []);
 
+  function addAsset(newAsset) {
+    setAssets((prev) => {
+      const next = [...prev, newAsset];
+      // map against latest crypto prices
+      return next.map((asset) => {
+        const coin = crypto.find((c) => c.id === asset.id) || {};
+        const coinPrice = typeof coin.price === "number" ? coin.price : asset.price ?? 0;
+        const amount = typeof asset.amount === "number" ? asset.amount : Number(asset.amount) || 0;
+        return {
+          ...asset,
+          totalAmount: Number((amount * coinPrice).toFixed(2)),
+          totalProfit: Number((amount * coinPrice - amount * (asset.price || coinPrice)).toFixed(2)),
+          price: coinPrice,
+          growPercent: percentDifference(asset.price ?? 0, coinPrice),
+          grow: (asset.price ?? 0) < coinPrice,
+        };
+      });
+    });
+  }
+
   return (
-    <CryptoContext.Provider value={{ loading, crypto, assets }}>
+    <CryptoContext.Provider value={{ loading, crypto, assets, addAsset }}>
       {children}
     </CryptoContext.Provider>
   );

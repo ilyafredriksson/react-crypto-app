@@ -9,10 +9,16 @@ import { CryptoContext } from "../context/crypto-context.jsx";
 
 
 export default function AppLayout() {
-  const {loading} = useContext(CryptoContext);
+  const { loading } = useContext(CryptoContext);
 
-  if (loading) return <Spin fullscreen />
+  if (loading)
     return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+        <Spin size="large" />
+      </div>
+    );
+
+  return (
     <Layout>
       <AppHeader />
       <Layout>
@@ -20,5 +26,5 @@ export default function AppLayout() {
         <AppContent />
       </Layout>
     </Layout>
-    )
+  );
 }

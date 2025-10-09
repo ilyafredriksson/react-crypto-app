@@ -1,7 +1,6 @@
 import { Layout, Select, Space, Button,Modal,Drawer } from "antd";
 import { useCrypto } from "../../context/crypto-context";
-import { use } from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import CoinInfoModal from "../CoininfoModal";
 import AddAssetForm from "../AddAssetForm";
 
@@ -23,7 +22,7 @@ export default function AppHeader() {
   const [select,setSelect] = useState(false);
     const [modal,setModal] = useState(false);
     const[coin,setCoin]=useState(null);
-    const[drawer,setDrawer]=useState(true);
+  const[drawer,setDrawer]=useState(false);
 
   const { crypto } = useCrypto();
 
@@ -81,7 +80,7 @@ export default function AppHeader() {
       <Drawer
         width={600}
         title="Add Asset"
-        closable={{ 'aria-label': 'Close Button' }}
+        closable={true}
         onClose={()=>setDrawer(false)}
         open={drawer}
         destroyOnClose

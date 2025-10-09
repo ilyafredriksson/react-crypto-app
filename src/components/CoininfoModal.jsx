@@ -29,7 +29,7 @@ export default function CoinInfoModal({ coin }) {
       </Typography.Paragraph>
       <Typography.Paragraph>
         <Typography.Text strong> Price: </Typography.Text>
-        {coin.price.toFixed(2)} $
+        {typeof coin.price === "number" ? coin.price.toFixed(2) + " $" : "N/A"}
       </Typography.Paragraph>
 
       <Typography.Paragraph>

@@ -10,7 +10,8 @@ const siderStyle = {
 };
 
 export default function AppSider() {
-const { assets}= useContext(CryptoContext);
+  const ctx = useContext(CryptoContext);
+  const assets = ctx?.assets ?? [];
 
  
   return (
@@ -38,13 +39,13 @@ const { assets}= useContext(CryptoContext);
                 <span>
                   {item.withTag && (
                     <Tag color={asset.grow ? "green" : "red"}>
-                      {asset.growPercent.toFixed(2)}%
+            {(Number(asset.growPercent ?? 0)).toFixed(2)}%
                     </Tag>
                   )}
                   {item.isPlain && item.value}
                   {!item.isPlain && !item.withTag && (
                     <Typography.Text type={asset.grow ? "success" : "danger"}>
-                      {Number(item.value).toFixed(2)}$
+                      {Number(item.value ?? 0).toFixed(2)}$
                     </Typography.Text>
                   )}
                 </span>
