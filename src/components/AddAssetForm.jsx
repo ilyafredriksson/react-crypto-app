@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
 import {
   Select,
   Space,
@@ -30,6 +30,7 @@ export default function AddAssetForm() {
   const { crypto } = useCrypto();
   const [submitted, setSubmitted] = useState(false);
   const [coin, setCoin] = useState(null);
+  const assetRef  = useRef();
  
   const onClose = () => {
     setSubmitted(false);
@@ -38,8 +39,8 @@ export default function AddAssetForm() {
   };
 
   if (submitted) {
-    const amount = form.getFieldValue("amount") ?? 0;
-    const price = form.getFieldValue("price") ?? 0;
+    const amount = form.getFieldValue("amount") ?? assetRef?.current?.amount ?? 0;
+    const price = form.getFieldValue("price") ?? assetRef?.current?.price ?? 0;
     return (
       <Result
         status="success"
@@ -81,7 +82,14 @@ export default function AddAssetForm() {
     );
   }
   function onFinish(values) {
-    console.log("Finish:", values);
+    console.log(values)
+  const newAsset = {
+   id: coin.id,
+   amount: values.amount,
+   price: values.price,
+   date: values.date?.$d ?? (values.date?.toDate ? values.date.toDate() : new Date()),
+   };
+    assetRef.current = newAsset;
     setSubmitted(true);
   }
   function handleAmountChange(value) {
