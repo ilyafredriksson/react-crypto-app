@@ -33,6 +33,7 @@ export function CryptoContextProvider({ children }) {
           totalAmount: Number((amount * coinPrice).toFixed(2)),
           totalProfit: Number((amount * coinPrice - amount * assetPrice).toFixed(2)),
           price: coinPrice,
+          name: coin.name || asset.id,
         };
       });
 
