@@ -27,7 +27,7 @@ const validateMessages = {
 
 export default function AddAssetForm() {
   const [form] = Form.useForm();
-  const { crypto, addAsset } = useCrypto();
+  const { crypto, addAsset, addTransaction } = useCrypto();
   const [submitted, setSubmitted] = useState(false);
   const [coin, setCoin] = useState(null);
   const assetRef  = useRef();
@@ -92,6 +92,16 @@ export default function AddAssetForm() {
     assetRef.current = newAsset;
     setSubmitted(true);
     if (typeof addAsset === "function") addAsset(newAsset);
+    // record a transaction for the purchase
+    if (typeof addTransaction === "function") {
+      addTransaction({
+        type: "buy",
+        coinId: coin.id,
+        amount: newAsset.amount,
+        price: newAsset.price ?? coin.price,
+        date: newAsset.date,
+      });
+    }
   }
   function handleAmountChange(value) {
     const price = form.getFieldValue("price") ?? coin.price ?? 0;

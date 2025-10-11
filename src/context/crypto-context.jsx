@@ -12,6 +12,14 @@ export function CryptoContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [crypto, setCrypto] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [transactions, setTransactions] = useState(() => {
+    try {
+      const raw = localStorage.getItem("crypto_transactions");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  });
 
   useEffect(() => {
     async function preload() {
@@ -65,8 +73,46 @@ export function CryptoContextProvider({ children }) {
     });
   }
 
+  function addTransaction(tx) {
+    const t = {
+      id: tx.id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      type: tx.type ?? "buy",
+      coinId: tx.coinId || tx.id || tx.assetId,
+      amount: typeof tx.amount === "number" ? tx.amount : Number(tx.amount) || 0,
+      price: typeof tx.price === "number" ? tx.price : Number(tx.price) || 0,
+      date: tx.date ? new Date(tx.date).toISOString() : new Date().toISOString(),
+      notes: tx.notes || "",
+    };
+    setTransactions((prev) => {
+      const next = [t, ...prev];
+      try {
+        localStorage.setItem("crypto_transactions", JSON.stringify(next));
+      } catch (e) {
+        // ignore storage errors
+      }
+      return next;
+    });
+  }
+
+  function clearTransactions() {
+    try {
+      localStorage.removeItem("crypto_transactions");
+    } catch (e) {}
+    setTransactions([]);
+  }
+
   return (
-    <CryptoContext.Provider value={{ loading, crypto, assets, addAsset }}>
+    <CryptoContext.Provider
+      value={{
+        loading,
+        crypto,
+        assets,
+        addAsset,
+        transactions,
+        addTransaction,
+        clearTransactions,
+      }}
+    >
       {children}
     </CryptoContext.Provider>
   );
