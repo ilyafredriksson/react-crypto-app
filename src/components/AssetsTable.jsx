@@ -16,6 +16,8 @@ const columns = [
   {
     title: "Amount",
     dataIndex: "amount",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.amount - b.amount,
     
   },
 ];
